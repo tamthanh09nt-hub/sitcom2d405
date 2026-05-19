@@ -1,9 +1,9 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
 export async function generateContentOnServer(data: any) {
-  const { characters, situation, aspectRatio, duration, topic, apiKey } = data;
+  const { characters, situation, aspectRatio, duration, topic, apiKey, model: requestedModel } = data;
   const aiClient = new GoogleGenAI({ apiKey: apiKey || process.env.GEMINI_API_KEY });
-  const model = "gemini-3-flash-preview";
+  const model = requestedModel || "gemini-3-flash-preview";
 
   const systemInstruction = `You are a professional Creative Director and AI Prompt Engineer specializing in 2D Vector Animation.
 Your task is to transform diverse life situations into a highly detailed, scene-by-scene video script within ONE ABSOLUTELY FIXED CONSISTENT SETTING for the entire episode.

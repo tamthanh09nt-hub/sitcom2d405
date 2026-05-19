@@ -29,12 +29,13 @@ export async function generateScript(
   aspectRatio: "16:9" | "9:16",
   duration: number,
   topic: string = "Đời thường",
-  customApiKey?: string
+  customApiKey?: string,
+  model?: string
 ): Promise<GenerationResult> {
   const response = await window.fetch('/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ characters, situation, aspectRatio, duration, topic, apiKey: customApiKey })
+    body: JSON.stringify({ characters, situation, aspectRatio, duration, topic, apiKey: customApiKey, model })
   });
   
   if (!response.ok) {

@@ -38,7 +38,18 @@ export default function App() {
   const [result, setResult] = useState<GenerationResult | null>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [apiKey, setApiKey] = useState('');
+  const [selectedModel, setSelectedModel] = useState('gemini-2.5-flash');
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+
+  const models = [
+    { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash' },
+    { id: 'gemini-2.5-flash-lite', name: 'Gemini 2.5 Flash-Lite' },
+    { id: 'gemini-3.1-flash-lite-preview', name: 'Gemini 3.1 Flash-Lite Preview' },
+    { id: 'gemini-3-flash-preview', name: 'Gemini 3 Flash Preview' },
+    { id: 'gemini-flash-latest', name: 'Gemini Flash Latest' },
+    { id: 'gemini-2.0-flash-lite', name: 'Gemini 2.0 Flash-Lite' },
+    { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash' },
+  ];
 
   const topics = [
     'Chuyện thầm kín',
@@ -116,7 +127,7 @@ export default function App() {
     setIsGenerating(true);
     setResult(null);
     try {
-      const data = await generateScript(characters, situation, aspectRatio, duration, topic, apiKey);
+      const data = await generateScript(characters, situation, aspectRatio, duration, topic, apiKey, selectedModel);
       setResult(data);
     } catch (error) {
       console.error(error);
@@ -195,6 +206,19 @@ export default function App() {
                     <Trash2 className="w-4 h-4 opacity-0" /> {/* Spacer or close icon */}
                   </button>
                 </div>
+                <div className="mb-4">
+                  <label className="block text-xs font-bold text-gray-700 mb-1">Model</label>
+                  <select 
+                    value={selectedModel}
+                    onChange={(e) => setSelectedModel(e.target.value)}
+                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:border-accent-blue focus:ring-4 focus:ring-accent-blue/20 transition-all text-sm outline-hidden"
+                  >
+                    {models.map(model => (
+                      <option key={model.id} value={model.id}>{model.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <label className="block text-xs font-bold text-gray-700 mb-1">API Key</label>
                 <input 
                   type="password" 
                   value={apiKey}
