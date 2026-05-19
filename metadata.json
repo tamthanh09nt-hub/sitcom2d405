@@ -1,6 +1,6 @@
 {
-  "name": " TOOL VIDEO HOẠT HÌNH 2D PRO",
+  "name": "Remix: TOOL VIDEO HOẠT HÌNH 2D PRO",
   "description": "Professional 3D Animation script and prompt generator for AI video production.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }

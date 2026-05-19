@@ -25,6 +25,16 @@ import {
 } from 'lucide-react';
 import { generateScript, type Character, type GenerationResult } from './services/gemini';
 
+const GEMINI_MODELS = [
+  { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', description: 'Khuyên dùng: ổn định, mạnh, phù hợp phân tích video/kênh.' },
+  { id: 'gemini-2.5-flash-lite', name: 'Gemini 2.5 Flash-Lite', description: 'Nhẹ hơn 2.5 Flash, tiết kiệm quota hơn.' },
+  { id: 'gemini-3.1-flash-lite-preview', name: 'Gemini 3.1 Flash-Lite Preview', description: 'Model mới, nhanh, dùng khi key/project có hỗ trợ.' },
+  { id: 'gemini-3-flash-preview', name: 'Gemini 3 Flash Preview', description: 'Model mới, mạnh hơn, phù hợp phân tích sâu khi được hỗ trợ.' },
+  { id: 'gemini-flash', name: 'Gemini Flash Latest', description: 'Alias tự động của Google, dùng khi project hỗ trợ alias latest.' },
+  { id: 'gemini-2.0-flash-lite', name: 'Gemini 2.0 Flash Lite', description: 'Dự phòng nếu key/project còn hỗ trợ.' },
+  { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', description: 'Dự phòng nếu key/project còn hỗ trợ.' },
+];
+
 export default function App() {
   const [characters, setCharacters] = useState<Character[]>([
     { name: 'Chồng Tèo', appearance: 'Một người đàn ông trẻ tuổi Việt Nam, khuôn mặt hiền lành, tóc đen cắt ngắn gọn gàng, đôi mắt to tròn biểu cảm. Mặc áo thun màu xám đơn giản. Nét vẽ hoạt hình 2D sạch sẽ, phong cách sitcom ấm áp, mắt trắng hình oval với đồng tử đen, đường nét thanh mảnh kiểu Chuyện Nhà Tý.', tone: 'Trầm ấm, vui vẻ nhưng dễ bắt sóng cảm xúc.' },
@@ -40,16 +50,6 @@ export default function App() {
   const [apiKey, setApiKey] = useState('');
   const [selectedModel, setSelectedModel] = useState('gemini-2.5-flash');
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
-
-  const models = [
-    { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash' },
-    { id: 'gemini-2.5-flash-lite', name: 'Gemini 2.5 Flash-Lite' },
-    { id: 'gemini-3.1-flash-lite-preview', name: 'Gemini 3.1 Flash-Lite Preview' },
-    { id: 'gemini-3-flash-preview', name: 'Gemini 3 Flash Preview' },
-    { id: 'gemini-flash-latest', name: 'Gemini Flash Latest' },
-    { id: 'gemini-2.0-flash-lite', name: 'Gemini 2.0 Flash-Lite' },
-    { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash' },
-  ];
 
   const topics = [
     'Chuyện thầm kín',
@@ -198,27 +198,14 @@ export default function App() {
                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
                  animate={{ opacity: 1, y: 0, scale: 1 }}
                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                 className="absolute top-14 right-0 bg-white/90 backdrop-blur-xl p-5 rounded-2xl shadow-xl w-80 border border-white/60"
+                 className="absolute top-14 right-0 bg-white/95 backdrop-blur-xl p-6 rounded-2xl shadow-xl w-[700px] max-w-[calc(100vw-2rem)] border border-white/60"
               >
                 <div className="flex justify-between items-center mb-3">
-                  <label className="block text-sm font-bold text-gray-800">Cấu hình Gemini API</label>
+                  <label className="block text-sm font-bold text-gray-800">Cấu hình API Key</label>
                   <button onClick={() => setShowApiKeyInput(false)} className="text-gray-400 hover:text-gray-600">
                     <Trash2 className="w-4 h-4 opacity-0" /> {/* Spacer or close icon */}
                   </button>
                 </div>
-                <div className="mb-4">
-                  <label className="block text-xs font-bold text-gray-700 mb-1">Model</label>
-                  <select 
-                    value={selectedModel}
-                    onChange={(e) => setSelectedModel(e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:border-accent-blue focus:ring-4 focus:ring-accent-blue/20 transition-all text-sm outline-hidden"
-                  >
-                    {models.map(model => (
-                      <option key={model.id} value={model.id}>{model.name}</option>
-                    ))}
-                  </select>
-                </div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">API Key</label>
                 <input 
                   type="password" 
                   value={apiKey}
@@ -226,9 +213,43 @@ export default function App() {
                   placeholder="Nhập API Key của bạn..."
                   className="w-full px-4 py-3 bg-white/80 border border-slate-200 rounded-xl focus:border-accent-blue focus:ring-4 focus:ring-accent-blue/20 transition-all text-sm outline-hidden shadow-inner"
                 />
-                <p className="text-xs text-slate-500 mt-3 leading-relaxed">
+                <p className="text-xs text-slate-500 mt-2 mb-4 leading-relaxed">
                   Để trống sẽ dùng API Key mặc định của hệ thống. Key của bạn chỉ được lưu tạm thời trên trình duyệt.
                 </p>
+
+                <div className="mt-6 pt-5 border-t border-slate-200/60">
+                  <div className="flex justify-between items-center mb-4">
+                    <label className="block text-xs font-bold text-[#78909c] uppercase tracking-widest">Chọn Model Gemini</label>
+                    <span className="text-xs font-semibold px-2 py-1 bg-accent-blue/10 text-accent-blue rounded-md">
+                      Đang dùng: {selectedModel}
+                    </span>
+                  </div>
+                  
+                  {/* The Selected Model Detailed View */}
+                  <div className="mb-4 p-4 border border-slate-200 rounded-xl bg-white/60 text-sm">
+                    <span className="font-bold text-gray-800">{GEMINI_MODELS.find(m => m.id === selectedModel)?.name}</span>
+                    <span className="text-gray-600 font-medium ml-1">— {GEMINI_MODELS.find(m => m.id === selectedModel)?.description}</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 pb-2">
+                    {GEMINI_MODELS.map(model => (
+                      <button
+                        key={model.id}
+                        onClick={() => setSelectedModel(model.id)}
+                        className={`p-4 rounded-xl border text-left flex flex-col gap-1.5 transition-all ${
+                          selectedModel === model.id 
+                            ? 'border-accent-blue/40 bg-accent-blue/5 shadow-xs' 
+                            : 'border-slate-100 bg-white/50 hover:border-slate-200 hover:bg-white/80 hover:-translate-y-[1px]'
+                        }`}
+                      >
+                        <span className={`text-sm font-bold ${selectedModel === model.id ? 'text-accent-blue' : 'text-slate-700'}`}>
+                          {model.name}
+                        </span>
+                        <span className="text-xs text-slate-500 leading-relaxed">{model.description}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
